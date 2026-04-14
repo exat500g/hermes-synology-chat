@@ -78,12 +78,10 @@ def apply_run_patch(hermes_dir: Path) -> bool:
         pattern = r'("QQ_ALLOW_ALL_USERS",?\s*\n)'
         match = re.search(pattern, new_content)
         if match:
-            insert = match.group(1) + '                       "SYNOLOGY_CHAT_ALLOW_ALL_USERS")\n'
-            # Remove the closing paren from original line
-            original = match.group(0)
-            if original.rstrip().endswith(')'):
-                original = original.rstrip()[:-1] + '\n'
-            new_content = new_content.replace(match.group(0), original + '                       "SYNOLOGY_CHAT_ALLOW_ALL_USERS")\n', 1)
+            # Find the line, add new entry after it, keep closing paren in place
+            insert_pos = match.end()
+            new_line = '                       "SYNOLOGY_CHAT_ALLOW_ALL_USERS",\n'
+            new_content = new_content[:insert_pos] + new_line + new_content[insert_pos:]
             patched = True
 
     # 3. Add adapter factory in _create_adapter

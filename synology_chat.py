@@ -89,7 +89,7 @@ class SynologyChatAdapter(BasePlatformAdapter):
     """
 
     def __init__(self, config: PlatformConfig):
-        super().__init__(config, Platform.WEIXIN)  # Temporary; see note below
+        super().__init__(config, Platform.SYNOLOGY_CHAT)
 
         extra = config.extra or {}
         self._host: str = extra.get("host", DEFAULT_HOST)
@@ -314,6 +314,14 @@ class SynologyChatAdapter(BasePlatformAdapter):
         text = content[:MAX_MESSAGE_LENGTH]
 
         # Build the API request
+        # Try to convert user_id to int, but keep as string if it fails
+        try:
+            user_id_int = int(user_id)
+            user_ids = [user_id_int]
+        except (ValueError, TypeError):
+            # If user_id is not a valid integer, use it as-is
+            user_ids = [user_id]
+        
         post_data = {
             "api": "SYNO.Chat.External",
             "method": "chatbot",
@@ -321,7 +329,7 @@ class SynologyChatAdapter(BasePlatformAdapter):
             "token": self._token,
             "payload": json.dumps({
                 "text": text,
-                "user_ids": [int(user_id)],
+                "user_ids": user_ids,
             }),
         }
 

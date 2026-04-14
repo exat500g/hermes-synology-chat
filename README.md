@@ -113,6 +113,16 @@ SYNOLOGY_CHAT_ALLOWED_USERS=123,456,789
 SYNOLOGY_CHAT_ALLOW_ALL_USERS=true
 ```
 
+也支持 Hermes 内置配对流程：用户首次发消息时会收到配对码，管理员执行 `hermes pairing approve synology_chat <code>` 即可。
+
+## 更新日志
+
+### v0.2.0 (2026-04-15)
+
+- **修复** `super().__init__` 传入 `Platform.WEIXIN` → 改为 `Platform.SYNOLOGY_CHAT`
+- **修复** `send()` 中 `int(user_id)` 对非数字 user_id 崩溃，加了 try/except 兼容字符串 ID
+- **修复** `patches.py` 中 `platform_allow_all_map` 补丁插入逻辑，避免产生语法错误
+
 ## Synology Chat 侧配置
 
 1. **创建机器人**：DSM → Chat 应用 → 右上角头像 → 整合 → 机器人 → 创建
