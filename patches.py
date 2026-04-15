@@ -103,7 +103,7 @@ def apply_run_patch(hermes_dir: Path) -> bool:
 
     # 4. Add to platform_allowlist_map
     if 'Platform.SYNOLOGY_CHAT: "SYNOLOGY_CHAT_ALLOWED_USERS"' not in new_content:
-        pattern = r'(Platform\.QQBOT:\s*"QQ_ALLOWED_USERS",?\s*\n)'
+        pattern = r'(Platform\.QQBOT:\s*"QQ_ALLOWED_USERS",?\s*\n)(?!.*SYNOLOGY_CHAT)'
         match = re.search(pattern, new_content)
         if match:
             insert = match.group(0) + '            Platform.SYNOLOGY_CHAT: "SYNOLOGY_CHAT_ALLOWED_USERS",\n'
@@ -112,7 +112,7 @@ def apply_run_patch(hermes_dir: Path) -> bool:
 
     # 5. Add to platform_allow_all_map
     if 'Platform.SYNOLOGY_CHAT: "SYNOLOGY_CHAT_ALLOW_ALL_USERS"' not in new_content:
-        pattern = r'(Platform\.QQBOT:\s*"QQ_ALLOW_ALL_USERS",?\s*\n)'
+        pattern = r'(Platform\.QQBOT:\s*"QQ_ALLOW_ALL_USERS",?\s*\n)(?!.*SYNOLOGY_CHAT)'
         match = re.search(pattern, new_content)
         if match:
             insert = match.group(0) + '            Platform.SYNOLOGY_CHAT: "SYNOLOGY_CHAT_ALLOW_ALL_USERS",\n'
