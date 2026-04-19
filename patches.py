@@ -75,13 +75,13 @@ def apply_run_patch(hermes_dir: Path) -> bool:
 
     # 2. Add SYNOLOGY_CHAT_ALLOW_ALL_USERS to allow-all check
     if '"SYNOLOGY_CHAT_ALLOW_ALL_USERS"' not in new_content:
-        pattern = r'("QQ_ALLOW_ALL_USERS",?\s*\n)'
+        # Use context to disambiguate: _allow_all uses "or any(" prefix
+        pattern = r'("QQ_ALLOW_ALL_USERS",?\s*\n\s*\))'
         match = re.search(pattern, new_content)
         if match:
-            # Find the line, add new entry after it, keep closing paren in place
-            insert_pos = match.end()
-            new_line = '                       "SYNOLOGY_CHAT_ALLOW_ALL_USERS",\n'
-            new_content = new_content[:insert_pos] + new_line + new_content[insert_pos:]
+            # Insert before the closing paren
+            insert = '                       "SYNOLOGY_CHAT_ALLOW_ALL_USERS",\n' + match.group(0)
+            new_content = new_content[:match.start()] + insert + new_content[match.end():]
             patched = True
 
     # 3. Add adapter factory in _create_adapter
